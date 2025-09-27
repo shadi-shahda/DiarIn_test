@@ -1,44 +1,6 @@
-function checkValue(expectedStatus, actualStatus) {
-  expect(expectedStatus).to.equal(actualStatus)
-}
-
-function intercept(requestType, link, alias, todo, status) {
-  cy.intercept(requestType, link).as(alias)
-  todo()
-}
-
-function wait(alias, todo) {
-  cy.wait(alias).then(todo)
-}
+import { checkValue, intercept, wait, waitForElementThen } from './../support/functions'
 
 describe('Filter houses', () => {
-
-  
-  Cypress.Commands.add('login', () => {
-    cy.visit('https://propadmin.pan-code.com/auth')
-    cy.get('[name="email"]').clear().type('ghassan@gmail.com')
-    cy.get('input[type="radio"][value="1"]').check()
-    
-    intercept('POST', 'https://property.pan-code.com/api/admin/auth/email-login/', 'loginRequest',
-      () => { cy.get('[id="kt_sign_in_submit"]').click() })
-      
-      wait('@loginRequest', (interception) => {
-        checkValue(interception.response.statusCode, 201)
-        const body = interception.response.body
-        cy.log('response body: ')
-        Object.entries(body).forEach((key, value) => {
-          cy.log(`${key}: ${value}`)
-        })
-      })
-    })
-    
-    // beforeEach(() => {
-    //   cy.login()
-    // })
-    
-  Cypress.Commands.add('waitForElementThen', (selector, callback) => {
-    cy.get(selector, { timeout: 50000 }).should('be.visible').then(callback)
-  })
 
   Cypress.Commands.add('houses_list_first_page', () => {
     cy.get('span.menu-title').contains('houses').click()
@@ -67,7 +29,7 @@ describe('Filter houses', () => {
     cy.get('input.form-control').type(42)
   })
 
-  it('houses list', () => {
+  it.only('houses list', () => {
     cy.houses_list_first_page()
   })
 
@@ -76,7 +38,7 @@ describe('Filter houses', () => {
     cy.click_on_filter()
     cy.select_status()
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         const cells = $row.find('td')
         if (cells.length > 8) {
@@ -146,7 +108,7 @@ describe('Filter houses', () => {
     cy.select_provider()
 
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         if ($row.length > 0) {
           const cells = $row.find('td')
@@ -165,8 +127,7 @@ describe('Filter houses', () => {
     cy.get('div.css-19bb58m').eq(1).should('have.text', '')
   })
 
-  it.only('try search in providers in capital letters only', () => {
-    cy.login()
+  it('try search in providers in capital letters only', () => {
     cy.houses_list_first_page()
     cy.click_on_filter()
     cy.get('div.css-19bb58m').eq(1).type('NOOR')
@@ -216,7 +177,7 @@ describe('Filter houses', () => {
     cy.enter_reference_number()
 
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         if ($row.length > 0) {
           const cells = $row.find('td')
@@ -232,7 +193,7 @@ describe('Filter houses', () => {
     cy.select_status()
     cy.select_provider()
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         if ($row.length > 0) {
           const cells = $row.find('td')
@@ -249,7 +210,7 @@ describe('Filter houses', () => {
     cy.select_status()
     cy.enter_reference_number()
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         if ($row.length > 0) {
           const cells = $row.find('td')
@@ -266,7 +227,7 @@ describe('Filter houses', () => {
     cy.select_provider()
     cy.enter_reference_number()
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         if ($row.length > 0) {
           const cells = $row.find('td')
@@ -283,7 +244,7 @@ describe('Filter houses', () => {
     cy.select_provider()
     cy.enter_reference_number()
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
         if ($row.length > 0) {
           const cells = $row.find('td')
@@ -300,19 +261,19 @@ describe('Filter houses', () => {
     cy.click_on_filter()
     cy.enter_reference_number()
     cy.get('button#kt_TableFilters_close').eq(1).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr').each(($row) => {
       })
     })
 
     cy.click_on_filter()
     cy.get('button#kt_TableFilters_close').eq(2).click()
-    cy.waitForElementThen('table tbody tr', ($el) => {
+    waitForElementThen('table tbody tr', ($el) => {
       cy.get('table tbody tr')
-      .its('length')
-      .then((count) => {
-        expect(count).to.be.greaterThan(1)
-      })
+        .its('length')
+        .then((count) => {
+          expect(count).to.be.greaterThan(1)
+        })
     })
   })
 

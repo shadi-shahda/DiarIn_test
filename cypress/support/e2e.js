@@ -15,3 +15,26 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import { checkValue, intercept, wait } from './../support/functions'
+
+Cypress.Commands.add('login', () => {
+    cy.visit('https://propadmin.pan-code.com/auth')
+    cy.get('[name="email"]').clear().type('ghassan@gmail.com')
+    cy.get('input[type="radio"][value="1"]').check()
+    
+    intercept('POST', 'https://property.pan-code.com/api/admin/auth/email-login/', 'loginRequest',
+      () => { cy.get('[id="kt_sign_in_submit"]').click() })
+      
+      wait('@loginRequest', (interception) => {
+        checkValue(interception.response.statusCode, 201)
+        const body = interception.response.body
+        cy.log('response body: ')
+        Object.entries(body).forEach((key, value) => {
+          cy.log(`${key}: ${value}`)
+        })
+      })
+    })
+
+beforeEach(() => {
+  cy.login()
+});
