@@ -176,6 +176,11 @@ describe('create house fields validation', () => {
     cy.go_to_create_house()
   })
 
+  it('try to create house with required fields only', () => {
+    cy.fill_required_fields()
+    cy.click_on_submit()
+  })
+
   it('try to enter invalid data in building number (text not number)', () => {
     cy.get('input.form-control').eq(0).type('shadi')
     cy.get('input.form-control').eq(0).should('have.value', '')
@@ -939,7 +944,7 @@ describe('create house fields validation', () => {
     cy.get('div.css-19bb58m').should('have.value', '')
   })
 
-  it.only('in View Type when removing a selected view type it should display it again in safety properties options', () => {
+  it('in View Type when removing a selected view type it should display it again in amenities options', () => {
     cy.wait_for_apis()
     cy.select_Amenities()
     cy.get('div.css-1p3m7a8-multiValue').should('be.visible')
