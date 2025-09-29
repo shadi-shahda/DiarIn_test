@@ -37,4 +37,4 @@ Cypress.Commands.add('login', () => {
 
 beforeEach(() => {
   cy.login()
-});
+})
