@@ -1,4 +1,4 @@
-import { checkValue, intercept, wait, waitForElementThen } from './../support/functions'
+import { checkValue, intercept, wait, getStatus } from './../support/functions'
 
 describe('houses list data displayed properly', () => {
 
@@ -26,7 +26,7 @@ describe('houses list data displayed properly', () => {
           const expectedViews = item.view_types.map(v => v.name).join(', ');
           const tax_type = item.tax_type === null ? '-' : item.tax_type.label
           const reservations_count = item.reservations_count === 0 ? '-' : item.reservations_count
-          const status = item.status === 0 ? 'Draft' : item.status === 1 ? 'Pending' : item.status === 2 ? 'Rejected' : 'Published'
+          const status = getStatus(item.status)
 
           cy.get('td').eq(0).should('contain', item.reference_number)
           cy.get('td').eq(1).should('contain', item.property_type.name)
