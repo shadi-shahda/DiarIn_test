@@ -13,8 +13,8 @@ describe('house documents', () => {
     cy.get('a.ant-dropdown-trigger').eq(0).click()
     cy.get('li.ant-dropdown-menu-item').eq(0).click()
 
-    intercept('GET', 'https://property.pan-code.com/api/admin/house/houses/6a22f1ba-e218-466d-af49-704df0da21b1', 'house', () => { })
-    wait('@house', () => { })
+    // intercept('GET', 'https://property.pan-code.com/api/admin/house/houses/6a22f1ba-e218-466d-af49-704df0da21b1', 'house', () => { })
+    // wait('@house', () => { })
   })
 
   Cypress.Commands.add('click_on_add_house_document', () => {
@@ -66,7 +66,7 @@ describe('house documents', () => {
 
   })
 
-  it.only('make sure the uploaded document was uploaded successfully after hitting submit', () => {
+  it('make sure the uploaded document was uploaded successfully after hitting submit', () => {
     cy.go_to_house_details()
     cy.click_on_add_house_document()
 
@@ -80,6 +80,23 @@ describe('house documents', () => {
 
     wait('@uploadFile', interception => {
       checkValue(201, interception.response.statusCode)
+    })
+  })
+
+  it.only('check on document size must be less than 200kb', () => {
+    cy.go_to_house_details()
+    cy.click_on_add_house_document()
+
+    //file must be placed in cypress/fixtures
+    const fileName = 'lecture_1_introduction_FA_Regular_Expressions.pdf'
+
+    intercept('POST', 'https://property.pan-code.com/api/admin/house/house-documents/', 'uploadFile', () => { })
+    cy.get('input[type="file"]').attachFile(fileName)
+
+    cy.get('button.py-2').should('not.be.disabled').click()
+
+    wait('@uploadFile', interception => {
+      checkValue(400, interception.response.statusCode)
     })
   })
 })
