@@ -1,11 +1,14 @@
 import { checkValue, intercept, wait, getStatus } from './../support/functions'
 import 'cypress-file-upload';
 
-describe('house documents', () => {
+describe('house photo', () => {
+
+  const houseId = '6365c5a1-9028-42a3-9edd-4988cd744bca'
+  const photo = 'Screenshot (273).png'
 
   Cypress.Commands.add('go_to_house_details', () => {
     intercept('GET', 'https://property.pan-code.com/api/admin/house/houses/?page=1&pageSize=10', 'getHouses', () => { })
-    // intercept('GET', 'https://property.pan-code.com/api/admin/house/houses/6a22f1ba-e218-466d-af49-704df0da21b1', 'house', () => { })
+    intercept('GET', `https://property.pan-code.com/api/admin/house/houses/${houseId}`, 'house', () => { })
     cy.get('span.menu-title').contains('houses').click()
     cy.get('span.menu-title').contains('houses list').click()
     wait('@getHouses', (interception) => {
@@ -13,8 +16,7 @@ describe('house documents', () => {
     })
     cy.get('a.ant-dropdown-trigger').eq(0).click()
     cy.get('li.ant-dropdown-menu-item').eq(0).click()
-    // wait('@house', () => { })
-    cy.wait(2000)
+    wait('@house', () => { })
   })
 
   Cypress.Commands.add('click_on_add_house_photo', () => {
@@ -90,40 +92,36 @@ describe('house documents', () => {
   })
 
   it('make sure can\'t click submit without selecting Configure Room', () => {
-    const fileName = 'Screenshot 2024-12-22 122511.png'
 
-    cy.get('input[type="file"]').attachFile(fileName)
-    cy.get(`[title="${fileName}"]`).should('exist')
+    cy.get('input[type="file"]').attachFile(photo)
+    cy.get(`[title="${photo}"]`).should('exist')
 
     cy.get('button.py-2').should('be.disabled')
   })
 
   it('after uploading a photo make sure it was uploaded before hitting submit', () => {
-    const fileName = 'Screenshot 2024-12-22 122511.png'
 
-    cy.get('input[type="file"]').attachFile(fileName)
-    cy.get(`[title="${fileName}"]`).should('exist')
+    cy.get('input[type="file"]').attachFile(photo)
+    cy.get(`[title="${photo}"]`).should('exist')
   })
 
   it('ability to delete the uploaded photo', () => {
-    const fileName = 'Screenshot 2024-12-22 122511.png'
 
-    cy.get('input[type="file"]').attachFile(fileName)
-    cy.get(`[title="${fileName}"]`).should('exist')
+    cy.get('input[type="file"]').attachFile(photo)
+    cy.get(`[title="${photo}"]`).should('exist')
 
     cy.get('span.anticon-delete').click()
-    cy.get(`[title="${fileName}"]`).should('not.exist')
+    cy.get(`[title="${photo}"]`).should('not.exist')
 
   })
 
   it('disable submit button after deleting the uploaded photo ', () => {
-    const fileName = 'Screenshot 2024-12-22 122511.png'
 
-    cy.get('input[type="file"]').attachFile(fileName)
-    cy.get(`[title="${fileName}"]`).should('exist')
+    cy.get('input[type="file"]').attachFile(photo)
+    cy.get(`[title="${photo}"]`).should('exist')
 
     cy.get('span.anticon-delete').click()
-    cy.get(`[title="${fileName}"]`).should('not.exist')
+    cy.get(`[title="${photo}"]`).should('not.exist')
 
     cy.get('button.py-2').should('be.disabled')
 
@@ -140,9 +138,8 @@ describe('house documents', () => {
     cy.wait_for_configure()
     cy.get('div.css-19bb58m').click()
     cy.get('#react-select-4-option-0').click()
-    const fileName = 'Screenshot 2024-12-22 122511.png'
 
-    cy.get('input[type="file"]').attachFile(fileName)
+    cy.get('input[type="file"]').attachFile(photo)
 
     cy.get('button.py-2').should('not.be.disabled').click()
   })
@@ -152,9 +149,7 @@ describe('house documents', () => {
     cy.get('div.css-19bb58m').click()
     cy.get('#react-select-4-option-0').click()
 
-    const fileName = 'Screenshot (179).png'
-
-    cy.get('input[type="file"]').attachFile(fileName)
+    cy.get('input[type="file"]').attachFile(photo)
 
     intercept('POST', 'https://property.pan-code.com/api/admin/house/houses-photo/', 'housePhoto', () => {})
     

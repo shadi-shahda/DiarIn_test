@@ -46,8 +46,6 @@ describe('Filter houses', () => {
         }
       })
     })
-
-    // expect(element.status).to.equal(1)
   })
 
   it('try x button to remove the selected status', () => {

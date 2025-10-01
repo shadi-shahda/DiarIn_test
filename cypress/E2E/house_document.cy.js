@@ -83,7 +83,7 @@ describe('house documents', () => {
     })
   })
 
-  it.only('check on document size must be less than 200kb', () => {
+  it('check on document size must be less than 200kb', () => {
     cy.go_to_house_details()
     cy.click_on_add_house_document()
 
